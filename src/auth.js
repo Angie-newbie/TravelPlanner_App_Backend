@@ -1,12 +1,11 @@
 // this is the auth middle were 
 // will check if a user is of type admin or user
 
-import { expressjwt } from "express-jwt"
-import User from './models/user.js'
-import 'dotenv/config';
-import db from './db.js'
-import jwt from 'jsonwebtoken'
-const { verify } = jwt
+const db = require('./db.js');
+const { expressjwt } = require('express-jwt');
+const User = require('./models/user.js');
+const jwt = require('jsonwebtoken');
+require('dotenv').config(); 
 
 const secret = process.env.JWT_SECRET
 // auth middleware function auth takes in params of req, rest, next
@@ -71,4 +70,4 @@ export function checkUserType(req, res, next) {
     }
 }
 
-export default { auth, checkUserType, verifyToken}
+module.exports = { auth, checkUserType, verifyToken}

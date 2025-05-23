@@ -76,7 +76,7 @@ router.post('/register', auth, verifyToken, async (req, res) => {
         // lets create a 201 status response
         //goodRequest(email: user.email, accountType: user.accountType, message = 'User created successfully')
         // lets come back to this one
-        goodRequest(res, email = user.email, accountType = user.accountTypem, message = 'User created successfully')
+        goodRequest(res, email = user.email, accountType = user.accountType, message = 'User created successfully')
 
 
     }catch (err) {
