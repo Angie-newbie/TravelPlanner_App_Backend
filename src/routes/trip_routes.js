@@ -105,6 +105,11 @@ router.patch('/trips/:id', async (req, res) => {
 
 // Delete a trip
 router.delete('/trips/:id', async (req, res) => {
+  // Logic to tie 'delete operation' to the frontend
+  // cons deleted = await Trip.findByAndDelete(req.params.id)
+  // if(!deleted) return res.status(404).send('Trip not found')
+  // res.status(204).send()
+  //})
   const trip = await Trip.findByIdAndDelete(req.params.id)
   if (trip) {
     // sent the trip to the client
