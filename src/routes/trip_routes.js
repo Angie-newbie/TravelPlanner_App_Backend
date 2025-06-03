@@ -72,6 +72,7 @@ router.post('/trips', async (req, res) => {
       ...validatedData,
       userId: req.auth._id,
     });
+console.log('Creating trip for user:', req.auth._id);
 
     res.status(201).send(trip);
   } catch (err) {
