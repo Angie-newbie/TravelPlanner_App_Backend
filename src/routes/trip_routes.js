@@ -146,3 +146,4 @@ const updateTripTotalExpense = async (tripId) => {
 
 // imports the whole module
 module.exports =  router;
+
