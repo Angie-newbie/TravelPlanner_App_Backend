@@ -49,38 +49,26 @@ router.get('/trips', async (req, res) => {
 })
 
 
-// Search trips by location
+// Get one trip
 
-/** Search trips by location
- * this route superseded 'Get one trip'
- * more useful for the user search by location
- */
+// relative HTTP route to retrieve the trip
+router.get('/trips/:id', async (req, res) => {
 
-// take location from user for searching
-router.get('/trips/search', async (req, res) => {
-  const { location } = req.query;
+  // get the ID from the trip
+  const tripId = req.params.id;
 
-  // handling error if not location
-  if (!location) return badRequest(res, 'Input a location to search related trips');
+  // get the trip with the given ID
+  const trip = await Trip.findOne({ _id: tripId }); 
 
-  // 
-  try {
-    const userId = req.auth._id;
+  // send the trip back to the client
+  if (trip) {
+    res.send(formatTrip(trip));
 
-    // ensure trips belong to user
-    const trips = await Trip.find({
-      userId,
-      location: { $regex: new RegExp(location, 'i') }  // case-insensitive match
-    });
-
-    const formatted = trips.map(formatTrip);
-    res.json(formatted);
-
-  // handling error if trip is not found  
-  } catch (err) {
-    serverError(res, 'Failed to search trips');
+    // return an meaningful message to the client in case of error
+  } else {
+    res.status(404).send({ error: `Trip with id ${tripId} not found`})
   }
-});
+})
 
 
 // Create a new trip
@@ -146,4 +134,3 @@ const updateTripTotalExpense = async (tripId) => {
 
 // imports the whole module
 module.exports =  router;
-
