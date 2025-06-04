@@ -27,18 +27,21 @@ function formatTrip(trip) {
 // Get all trips
 router.get('/trips', async (req, res) => {
   try {
+
     // 1. verify email of user making the request
     const user = req.auth;
+
     // 2. return badRequest if the user is not authenticated
     if(!user || !user.email) {
       return badRequest(res, 'User not authorized');
     }
+    
     // 3. find all the trips where the user is the owner and return them
     const trips = await Trip.find({ userId: req.auth._id });
+
     // formatting the output
     const formattedTrips = trips.map(formatTrip);
     return res.json(formattedTrips);
-
   } catch(err) {
     console.error(err);
     serverError(res, 'Failed to get trips');
@@ -46,16 +49,50 @@ router.get('/trips', async (req, res) => {
 })
 
 
+// Search trips by location
+
+// take location from user for searching
+router.get('/trips/search', async (req, res) => {
+  const { location } = req.query;
+
+  // handling error if not location
+  if (!location) return badRequest(res, 'Input a location to search related trips');
+
+  // 
+  try {
+    const userId = req.auth._id;
+
+    // ensure trips belong to user
+    const trips = await Trip.find({
+      userId,
+      location: { $regex: new RegExp(location, 'i') }  // case-insensitive match
+    });
+
+    const formatted = trips.map(formatTrip);
+    res.json(formatted);
+
+  // handling error if trip is not found  
+  } catch (err) {
+    serverError(res, 'Failed to search trips');
+  }
+});
+
+
 // Get one trip
+
 // relative HTTP route to retrieve the trip
 router.get('/trips/:id', async (req, res) => {
+
   // get the ID from the trip
   const tripId = req.params.id;
+
   // get the trip with the given ID
   const trip = await Trip.findOne({ _id: tripId }); 
+
   // send the trip back to the client
   if (trip) {
     res.send(formatTrip(trip));
+
     // return an meaningful message to the client in case of error
   } else {
     res.status(404).send({ error: `Trip with id ${tripId} not found`})
@@ -64,6 +101,7 @@ router.get('/trips/:id', async (req, res) => {
 
 
 // Create a new trip
+
 router.post('/trips', async (req, res) => {
   try {
     const validatedData = validateNewTrip(req.body);
@@ -101,14 +139,15 @@ router.patch('/trips/:id', async (req, res) => {
 });
 
 
-
-
 // Delete a trip
+
 router.delete('/trips/:id', async (req, res) => {
   const trip = await Trip.findByIdAndDelete(req.params.id)
   if (trip) {
+
     // sent the trip to the client
     res.send(trip)
+
     // return an meaningful message to the client in case of error
   } else {
     res.status(404).send({ error: `Trip with id = '${req.params.id}' not found` })
@@ -116,6 +155,7 @@ router.delete('/trips/:id', async (req, res) => {
 })
 
 // Update the totalExpense of one trip
+
 const updateTripTotalExpense = async (tripId) => {
   const total = await Expense.getTotalForTrip(tripId);
   await Trip.findByIdAndUpdate(tripId, { totalExpense: total });
