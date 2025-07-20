@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 
 // Connect to MongoDB
 async function connect() {
-await mongoose.connect('mongodb://127.0.0.1:27017/travelp') // CHOOSE DB NAME
-console.log(mongoose.connection.readyState == 1 ? 'Mongoose connected' : 'Mongoose failed to connect!')
+  const uri = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/travelp';
+  await mongoose.connect(uri);
+  console.log(mongoose.connection.readyState == 1 ? 'Mongoose connected' : 'Mongoose failed to connect!');
 }
 
 // Disconnect from MongoDB
