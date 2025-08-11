@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    image: travelplanner-backend-image:local
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      # Add other env vars as needed
+    restart: unless-stopped
