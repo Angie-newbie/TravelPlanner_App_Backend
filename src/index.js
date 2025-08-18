@@ -23,7 +23,7 @@ app.use(express.json())
 
 // app.use(cors());
 app.use(cors({
-  origin: 'https://travel-planner-latteb.netlify.app', 
+  origin: ['https://travel-planner-latteb.netlify.app', 'https://travel-planner-app-frontend.vercel.app'], 
   credentials: true
 }));
 
