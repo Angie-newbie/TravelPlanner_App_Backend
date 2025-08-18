@@ -21,7 +21,11 @@ const port = 3000;
 // middleware to parse JSON body from the client
 app.use(express.json())
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: 'https://travel-planner-latteb.netlify.app', 
+  credentials: true
+}));
 
 
 // insertion of middleware through respective routes
